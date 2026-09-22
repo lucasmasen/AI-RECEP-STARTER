@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getUsage } from "@/lib/plan";
 import type { MissedCall } from "@/lib/types";
 
@@ -9,6 +9,8 @@ import CallList from "./call-list";
 import UpgradeButton from "./upgrade-button";
 
 export default async function DashboardPage() {
+  if (!isSupabaseConfigured()) redirect("/login");
+
   const supabase = await createClient();
   const {
     data: { user },

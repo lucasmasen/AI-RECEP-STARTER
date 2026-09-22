@@ -1,11 +1,26 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export default async function LoginPage({
   searchParams,
 }: PageProps<"/login">) {
+  if (!isSupabaseConfigured()) {
+    return (
+      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-6 py-20">
+        <Link href="/" className="text-sm text-muted hover:text-foreground">
+          &larr; Missed Call Copilot
+        </Link>
+        <h1 className="mt-6 text-2xl font-semibold">Not configured yet</h1>
+        <p className="mt-3 text-sm text-muted">
+          This deployment has no Supabase credentials set, so there is nothing to sign in
+          to. See the README for the four environment variables it needs.
+        </p>
+      </main>
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
