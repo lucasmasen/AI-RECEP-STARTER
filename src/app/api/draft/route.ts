@@ -77,8 +77,12 @@ export async function POST(request: Request) {
       model: "claude-opus-5",
       max_tokens: 4000,
       system: SYSTEM,
+      // Thinking stays on — it's what keeps the model from wandering outside the
+      // "never invent a price" rules — but effort drops to low. Writing three
+      // 300-character texts doesn't need deep reasoning, and the default (high)
+      // spends several cents a draft on thinking tokens nobody reads.
       thinking: { type: "adaptive" },
-      output_config: { format: zodOutputFormat(DraftsSchema) },
+      output_config: { effort: "low", format: zodOutputFormat(DraftsSchema) },
       messages: [
         {
           role: "user",
