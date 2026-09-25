@@ -4,9 +4,27 @@ A small business misses a call, logs the number and what the caller wanted, and 
 send-ready callback texts written by Claude — with an urgency read on the call and no
 invented prices, arrival times, or availability.
 
-<!-- Add the Vercel URL here once deployed: **Live:** https://… -->
+**Live:** https://ai-recep-starter.vercel.app — sign up with any email, 5 free drafts.
 
 ![The landing page](docs/landing.png)
+
+## What it actually produces
+
+Real output from the live app, not a mockup. Input was a voicemail note:
+*"pipe burst under the kitchen sink, water all over the floor, she shut the main off.
+Asking how soon someone can come out and what it'll cost."*
+
+It tagged the call **Emergency**, summarized it as *"Burst pipe under kitchen sink flooded
+the floor; main is shut off, she wants an ETA and cost,"* and wrote three drafts. The direct one:
+
+> Got your voicemail about the burst pipe under the kitchen sink. Call me back now and I'll
+> get you scheduled. Good call shutting the main off - leave it off. Can you tell me if the
+> water is still spreading and whether it has reached any walls or cabinets? I'll quote once
+> I see the pipe.
+
+The caller asked what it would cost. All three drafts decline to guess — *"I'll quote once I
+see the pipe"* — and none promise an arrival time. That's the constraint from the system
+prompt holding under a request specifically designed to pull a number out of it.
 
 ## Why this exists
 
@@ -100,8 +118,25 @@ Auth, RLS) · Claude via `@anthropic-ai/sdk` · Zod · Stripe
 
 ## Status
 
-Built and running. Typecheck and production build pass; auth gating is verified end to end
-(unauthenticated `/dashboard` redirects to `/login`, unauthenticated `POST /api/draft`
-returns 401). The Claude, Supabase, and Stripe paths are written against current SDK docs
-but need real credentials to exercise, so treat them as untested against live services until
-the deploy above is done.
+Deployed and verified end to end against live services: sign-up creates the account and its
+profile row, the quota decrements, Claude returns structured drafts, and the row persists and
+renders. Auth gating is verified too — unauthenticated `/dashboard` redirects to `/login` and
+unauthenticated `POST /api/draft` returns 401.
+
+Stripe is wired but not exercised; checkout needs test keys set, and without them the app
+reports "Stripe isn't configured" rather than breaking.
+
+`GET /api/health` reports the serving commit and whether each integration resolves — booleans
+only, no values. It exists because diagnosing this deployment through a CDN was otherwise
+guesswork: a cached page from an older build is indistinguishable from a new build that can't
+see its credentials.
+
+### A deployment note worth keeping
+
+Vercel withholds **Sensitive** environment variables during the build, and Next.js inlines
+`process.env.NEXT_PUBLIC_*` at build time. A `NEXT_PUBLIC_` variable marked Sensitive
+therefore compiles to `undefined` permanently even though the value exists at runtime — and
+Vercel refuses to save that combination at all. Since nothing here needs the value in the
+browser, `src/lib/supabase/config.ts` resolves config at runtime through a variable index the
+bundler can't inline, and accepts either naming convention. The variables in production are
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`, with no public prefix.
