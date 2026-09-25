@@ -12,7 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Without this, Next resolves the Open Graph image against localhost, and the
+// link previews as a broken image everywhere it's shared. Vercel sets
+// VERCEL_PROJECT_PRODUCTION_URL at build time (no protocol, hence the prefix).
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Missed Call Copilot",
   description:
     "Turn a missed call into a callback text worth sending, before the caller phones your competitor.",
