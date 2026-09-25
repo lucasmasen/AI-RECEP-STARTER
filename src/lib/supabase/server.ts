@@ -1,19 +1,9 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-/**
- * True when the Supabase environment variables are actually present.
- *
- * Exists so the public landing page can render on a fresh deploy that has no
- * env vars set yet — a marketing page shouldn't 500 because the database isn't
- * wired up. Pages that need a real session check this and treat false as
- * "signed out".
- */
-export function isSupabaseConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
-}
+import { supabaseAnonKey, supabaseUrl } from "./config";
+
+export { isSupabaseConfigured } from "./config";
 
 /**
  * Supabase client for Server Components, Route Handlers and Server Actions.
@@ -23,8 +13,8 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl()!,
+    supabaseAnonKey()!,
     {
       cookies: {
         getAll() {

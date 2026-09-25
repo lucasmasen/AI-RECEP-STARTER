@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/config";
+
 /**
  * Next 16 renamed Middleware to Proxy — same mechanism, new filename and export.
  *
@@ -17,13 +19,15 @@ export async function proxy(request: NextRequest) {
 
   // Nothing to refresh before the project is wired up. Without this, every
   // request on a freshly deployed instance throws before reaching a page.
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const url = supabaseUrl();
+  const anonKey = supabaseAnonKey();
+  if (!url || !anonKey) {
     return response;
   }
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {

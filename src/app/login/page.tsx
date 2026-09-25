@@ -2,11 +2,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { logSupabaseConfigState } from "@/lib/supabase/config";
 
 export default async function LoginPage({
   searchParams,
 }: PageProps<"/login">) {
   if (!isSupabaseConfigured()) {
+    // Names, never values — readable in Vercel's Runtime Logs. Turns "it says
+    // not configured" into "it found these three names and none of them match".
+    logSupabaseConfigState("/login");
     return (
       <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-6 py-20">
         <Link href="/" className="text-sm text-muted hover:text-foreground">
