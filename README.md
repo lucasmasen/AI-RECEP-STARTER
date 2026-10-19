@@ -37,6 +37,11 @@ sink.
 So this is the smallest useful version of the thing they actually asked for: the writing
 part, without the phone system.
 
+**Where it went next:** the phone system. [AI-RECEP-DEMO](https://github.com/lucasmasen/AI-RECEP-DEMO)
+is a live AI receptionist that answers the call itself, walks a homeowner through shutting off a
+burst pipe, alerts the owner mid-call, and never tells a caller help is coming unless the alert
+actually went through.
+
 ## What's in it
 
 | Piece | Where |
