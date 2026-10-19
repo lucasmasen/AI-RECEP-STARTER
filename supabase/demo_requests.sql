@@ -65,16 +65,23 @@ begin
 end;
 $$;
 
-revoke all on function public.request_demo_access(text, text, text, text, text, text) from public;
-grant execute on function public.request_demo_access(text, text, text, text, text, text) to anon, authenticated;
+-- Server only. The website's /api/demo-access calls this with the service-role key after its bot
+-- checks; the public key every browser holds can't call it, so nobody can skip those checks or
+-- invent IP hashes to dodge the rate limit.
+revoke all on function public.request_demo_access(text, text, text, text, text, text) from public, anon, authenticated;
+grant execute on function public.request_demo_access(text, text, text, text, text, text) to service_role;
 
--- A Discord ping per new request. allowed_mentions stops anyone typing @everyone into the form.
+-- A Discord ping per new request, at most 20 an hour: the 21st sends one "possible spam" warning
+-- and the rest stay quiet until the hour rolls over (rows are still saved). allowed_mentions stops
+-- anyone typing @everyone into the form.
 create or replace function public.notify_demo_request() returns trigger
 language plpgsql
 security definer set search_path = public, extensions
 as $$
 declare
   v_url text;
+  v_last_hour int;
+  v_content text;
   v_role text := case new.role
     when 'shop_owner' then 'Runs a trade shop'
     when 'shop_staff' then 'Works at a shop (office or dispatch)'
@@ -84,25 +91,37 @@ declare
     when 'curious' then 'Just curious'
     else 'Not given' end;
 begin
-  select value into v_url from public.demo_line_settings where key = 'discord_webhook_url';
-  if v_url is not null then
-    perform net.http_post(
-      url := v_url,
-      body := jsonb_build_object(
-        'content', left(
-          E'**\U0001F3AF New demo request**\n' ||
-          'Name: ' || new.name || E'\n' ||
-          'Email: ' || new.email || E'\n' ||
-          'Business: ' || coalesce(new.business, 'not given') || E'\n' ||
-          'Who: ' || v_role ||
-          coalesce(E'\nFrom: ' || new.source, ''), 2000),
-        'allowed_mentions', jsonb_build_object('parse', '[]'::jsonb)),
-      headers := '{"Content-Type": "application/json"}'::jsonb
-    );
+  select count(*) into v_last_hour from public.demo_requests where created_at > now() - interval '1 hour';
+  if v_last_hour > 21 then
+    return new;
   end if;
+  select value into v_url from public.demo_line_settings where key = 'discord_webhook_url';
+  if v_url is null then
+    return new;
+  end if;
+  if v_last_hour = 21 then
+    v_content := E'**\u26A0\uFE0F Demo form: more than 20 requests in the last hour.** '
+                 'Possible spam. Pings are paused for the rest of the hour; every request is still saved in demo_requests.';
+  else
+    v_content := left(
+      E'**\U0001F3AF New demo request**\n' ||
+      'Name: ' || new.name || E'\n' ||
+      'Email: ' || new.email || E'\n' ||
+      'Business: ' || coalesce(new.business, 'not given') || E'\n' ||
+      'Who: ' || v_role ||
+      coalesce(E'\nFrom: ' || new.source, ''), 2000);
+  end if;
+  perform net.http_post(
+    url := v_url,
+    body := jsonb_build_object('content', v_content, 'allowed_mentions', jsonb_build_object('parse', '[]'::jsonb)),
+    headers := '{"Content-Type": "application/json"}'::jsonb
+  );
   return new;
 end;
 $$;
+
+-- Trigger functions never need to be callable through the API.
+revoke execute on function public.notify_demo_request() from public, anon, authenticated;
 
 drop trigger if exists demo_requests_notify on public.demo_requests;
 create trigger demo_requests_notify after insert on public.demo_requests

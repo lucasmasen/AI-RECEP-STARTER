@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { ROLE_VALUES } from "@/lib/demo";
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { supabaseServiceRoleKey } from "@/lib/supabase/config";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
 
 const RequestSchema = z.object({
   name: z.string().trim().min(1, "Add your name.").max(80),
@@ -23,9 +25,12 @@ const MIN_FILL_MS = 2500;
  * page; it lives in the database and comes back from request_demo_access(), which records the
  * request, rate-limits by network, and pings the owner (see supabase/demo_requests.sql).
  * Only a hash of the caller's IP is stored.
+ *
+ * That function can only be called with the service-role key, so the public key in every
+ * visitor's browser can't skip this route's bot checks or invent its own IP hashes.
  */
 export async function POST(request: Request) {
-  if (!isSupabaseConfigured()) {
+  if (!isSupabaseConfigured() || !supabaseServiceRoleKey()) {
     return NextResponse.json({ error: "The demo isn't set up on this deployment." }, { status: 503 });
   }
 
@@ -42,10 +47,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 400 });
   }
 
-  const ip = (request.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+  // Vercel sets x-real-ip to the visitor's address and overwrites anything the client sent.
+  const ip = request.headers.get("x-real-ip")?.trim()
+    || (request.headers.get("x-forwarded-for") ?? "").split(",")[0].trim()
+    || "unknown";
   const ipHash = createHash("sha256").update(`shutoff-call:${ip}`).digest("hex");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase.rpc("request_demo_access", {
     p_name: form.name,
     p_email: form.email,
