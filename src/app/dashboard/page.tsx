@@ -7,6 +7,7 @@ import type { MissedCall } from "@/lib/types";
 import DraftForm from "./draft-form";
 import CallList from "./call-list";
 import UpgradeButton from "./upgrade-button";
+import { Wordmark } from "@/components/brand";
 
 // Always render per request. These pages branch on environment variables that
 // are resolved at runtime, so letting Next prerender them bakes in whichever
@@ -14,6 +15,8 @@ import UpgradeButton from "./upgrade-button";
 // says "not configured" forever, even once the values are live. The landing
 // page stays static on purpose; it's the one that benefits from being cached.
 export const dynamic = "force-dynamic";
+
+export const metadata = { title: "Callback drafter" };
 
 export default async function DashboardPage() {
   if (!isSupabaseConfigured()) redirect("/login");
@@ -40,42 +43,60 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  // Stripe isn't configured on every deployment. Without it the button can only fail, so hide it.
+  const canUpgrade = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID);
+  const usedShare = usage.limit ? Math.min(1, usage.used / usage.limit) : 0;
+
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
-      <header className="flex flex-wrap items-baseline justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold">Missed Call Copilot</h1>
-          <p className="mt-1 text-sm text-muted">{user.email}</p>
+    <>
+      <header className="sticky top-0 z-20 border-b border-border/70 bg-background/85 backdrop-blur">
+        <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between gap-4 px-5">
+          <Wordmark />
+          <div className="flex items-center gap-4 text-sm">
+            <span className="hidden max-w-[16rem] truncate text-muted sm:inline">{user.email}</span>
+            <form action={signOut}>
+              <button className="rounded-md px-2 py-1 text-muted transition hover:text-foreground">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
-        <form action={signOut}>
-          <button className="text-sm text-muted transition hover:text-foreground">
-            Sign out
-          </button>
-        </form>
       </header>
 
-      <section className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4">
-        <p className="text-sm">
-          {usage.plan === "pro" ? (
-            <>
-              <span className="font-medium">Pro</span>
-              <span className="text-muted"> · unlimited drafts</span>
-            </>
-          ) : (
-            <>
-              <span className="font-medium">
-                {usage.remaining} of {usage.limit} drafts left
-              </span>
-              <span className="text-muted"> this month</span>
-            </>
+      <main className="mx-auto w-full max-w-3xl flex-1 px-5 pt-10 pb-24">
+        <p className="eyebrow">Callback drafter</p>
+        <h1 className="mt-2 text-3xl font-bold">Turn a missed call into a text worth sending.</h1>
+
+        <section className="card mt-8 px-5 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-sm">
+              {usage.plan === "pro" ? (
+                <>
+                  <span className="font-semibold">Pro</span>
+                  <span className="text-muted"> · unlimited drafts</span>
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold">
+                    {usage.remaining} of {usage.limit} free drafts left
+                  </span>
+                  <span className="text-muted"> this month</span>
+                </>
+              )}
+            </p>
+            {usage.plan === "free" && canUpgrade && <UpgradeButton />}
+          </div>
+          {usage.plan === "free" && (
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-accent-soft" aria-hidden="true">
+              <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${usedShare * 100}%` }} />
+            </div>
           )}
-        </p>
-        {usage.plan === "free" && <UpgradeButton />}
-      </section>
+        </section>
 
-      <DraftForm outOfDrafts={usage.remaining === 0} />
+        <DraftForm outOfDrafts={usage.remaining === 0} />
 
-      <CallList calls={(calls ?? []) as MissedCall[]} />
-    </main>
+        <CallList calls={(calls ?? []) as MissedCall[]} />
+      </main>
+    </>
   );
 }
