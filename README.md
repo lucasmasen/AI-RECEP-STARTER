@@ -1,14 +1,42 @@
-# Missed Call Copilot
+# Shutoff Call
 
-A small business misses a call, logs the number and what the caller wanted, and gets three
-send-ready callback texts written by Claude. Each one comes with an urgency read on the call,
-and none of them invent prices, arrival times, or availability.
+The website for Shutoff Call, an AI receptionist for plumbers and other trade shops. It has
+two jobs:
 
-**Live:** https://ai-recep-starter.vercel.app (sign up with any email, 5 free drafts).
+- **Show the receptionist.** The landing page tells the story, and `/demo` hands a visitor the
+  number of the live demo line once they say who they are. Clara answers as a made-up shop,
+  "Demo Plumbing", so anyone can hear her handle a burst pipe from their own phone.
+- **The callback drafter**, a free tool for the calls that already got missed: log the number
+  and what the caller wanted, and Claude writes three send-ready callback texts with an urgency
+  read and no invented prices, arrival times, or availability.
+
+**Live:** https://ai-recep-starter.vercel.app
 
 ![The landing page](docs/landing.png)
 
-## What it actually produces
+The receptionist itself (the voice agent, the webhook that alerts the shop, per-shop routing)
+lives in [AI-RECEP-DEMO](https://github.com/lucasmasen/AI-RECEP-DEMO).
+
+## The demo number is behind a short form
+
+Putting a live AI phone number on a public page invites every bot and bored visitor to call it,
+and each call costs money and pings the owner. So `/demo` asks for a name and an email first,
+and the number never ships in the page:
+
+- `POST /api/demo-access` validates the form, drops bots with a hidden honeypot field and a
+  "submitted too fast" check, and stores only a SHA-256 hash of the visitor's IP.
+- It calls `request_demo_access()`, a Postgres function (`supabase/demo_requests.sql`) that
+  records the request, refuses more than 5 new requests an hour from one network, and returns
+  the number from a settings table. The same email within a day gets the number back without
+  a second row.
+- An insert trigger posts each new request to the owner's Discord through `pg_net`, so every
+  person who tries the demo shows up as a lead within seconds. `allowed_mentions` is empty so
+  nobody can type `@everyone` into the form and ping a whole server.
+- The table has row level security on and no policies: nothing reads it through the public API.
+
+It's a soft gate, not a secret. The point is fewer stray calls and a name behind every real one.
+
+## What the callback drafter produces
 
 Real output from the live app, not a mockup. Input was a voicemail note:
 *"pipe burst under the kitchen sink, water all over the floor, she shut the main off.
@@ -26,7 +54,7 @@ The caller asked what it would cost. All three drafts decline to guess (*"I'll q
 see the pipe"*), and none promise an arrival time. That's the constraint from the system
 prompt holding under a request specifically designed to pull a number out of it.
 
-## Why this exists
+## Why the drafter exists
 
 I sell AI voice agents to small trade businesses: plumbing, HVAC, locksmith, restoration.
 The single thing every one of them says out loud is that a missed call is a lost job,
@@ -34,13 +62,11 @@ because the caller dials the next result within a few minutes. Most of them alre
 they should text back. What stops them is sitting down to write it while they're under a
 sink.
 
-So this is the smallest useful version of the thing they actually asked for: the writing
-part, without the phone system.
-
-**Where it went next:** the phone system. [AI-RECEP-DEMO](https://github.com/lucasmasen/AI-RECEP-DEMO)
-is a live AI receptionist that answers the call itself, walks a homeowner through shutting off a
-burst pipe, alerts the owner mid-call, and never tells a caller help is coming unless the alert
-actually went through.
+The drafter was the smallest useful version of that: the writing part, without the phone
+system. The phone system came next, in [AI-RECEP-DEMO](https://github.com/lucasmasen/AI-RECEP-DEMO):
+a live receptionist that answers the call itself, walks a homeowner through shutting off a
+burst pipe, alerts the owner mid-call, and never tells a caller help is coming unless the
+alert actually went through.
 
 ## What's in it
 
@@ -52,6 +78,9 @@ actually went through.
 | Stripe subscription checkout | `src/app/api/checkout/route.ts` |
 | Stripe webhook, signature-verified, flips the plan | `src/app/api/stripe/webhook/route.ts` |
 | Dashboard, quota meter, copy-to-clipboard drafts | `src/app/dashboard/` |
+| Landing page and brand (one palette, light and dark) | `src/app/page.tsx`, `src/components/` |
+| The gated demo page and its API | `src/app/demo/`, `src/app/api/demo-access/route.ts` |
+| Demo requests table, rate limit and Discord trigger | `supabase/demo_requests.sql` |
 
 Free plan is 5 drafts a month; Pro is unlimited.
 
@@ -100,7 +129,9 @@ npm run dev
 
 You need four things:
 
-1. **A Supabase project.** Run `supabase/schema.sql` in the SQL editor, then copy the URL,
+1. **A Supabase project.** Run `supabase/schema.sql` in the SQL editor (and
+   `supabase/demo_requests.sql` for the demo page, which expects the `demo_line_settings` table
+   from AI-RECEP-DEMO), then copy the URL,
    anon key, and service-role key from Project Settings → API. For a demo account, turn off
    Authentication → Sign In / Providers → **Confirm email**, so sign-up logs you straight in.
 2. **An Anthropic API key** from console.anthropic.com.
@@ -108,7 +139,7 @@ You need four things:
 4. **A webhook secret.** Locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`.
    Deployed: add the endpoint in the Stripe dashboard and copy its signing secret.
 
-Without Stripe the app runs fine. Upgrading just returns "Stripe isn't configured."
+Without Stripe the app runs fine, and the dashboard simply doesn't show the upgrade button.
 
 ## Deploying
 
@@ -128,8 +159,12 @@ profile row, the quota decrements, Claude returns structured drafts, and the row
 renders. Auth gating is verified too: unauthenticated `/dashboard` redirects to `/login`, and
 unauthenticated `POST /api/draft` returns 401.
 
-Stripe is wired but not exercised; checkout needs test keys set, and without them the app
-reports "Stripe isn't configured" rather than breaking.
+The demo page is verified the same way: a submission returns the number, writes one row,
+and the Discord ping lands (HTTP 204); a repeat from the same email adds no row; a bad email
+is refused; and the sixth new request in an hour from one network gets a 429.
+
+Stripe is wired but not exercised; checkout needs test keys set, and until then the upgrade
+button stays hidden.
 
 `GET /api/health` reports the serving commit and whether each integration resolves (booleans
 only, no values). It exists because diagnosing this deployment through a CDN was otherwise
