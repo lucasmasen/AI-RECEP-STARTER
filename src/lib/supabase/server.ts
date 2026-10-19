@@ -7,7 +7,7 @@ export { isSupabaseConfigured } from "./config";
 
 /**
  * Supabase client for Server Components, Route Handlers and Server Actions.
- * cookies() is async in Next 16, so this is too — await it at every call site.
+ * cookies() is async in Next 16, so this is too. Await it at every call site.
  */
 export async function createClient() {
   const cookieStore = await cookies();

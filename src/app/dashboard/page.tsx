@@ -10,7 +10,7 @@ import UpgradeButton from "./upgrade-button";
 
 // Always render per request. These pages branch on environment variables that
 // are resolved at runtime, so letting Next prerender them bakes in whichever
-// branch was true at BUILD time — deploy before setting env vars and the page
+// branch was true at BUILD time. Deploy before setting env vars, and the page
 // says "not configured" forever, even once the values are live. The landing
 // page stays static on purpose; it's the one that benefits from being cached.
 export const dynamic = "force-dynamic";

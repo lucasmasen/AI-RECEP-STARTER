@@ -6,7 +6,7 @@ import { logSupabaseConfigState } from "@/lib/supabase/config";
 
 // Always render per request. These pages branch on environment variables that
 // are resolved at runtime, so letting Next prerender them bakes in whichever
-// branch was true at BUILD time — deploy before setting env vars and the page
+// branch was true at BUILD time. Deploy before setting env vars, and the page
 // says "not configured" forever, even once the values are live. The landing
 // page stays static on purpose; it's the one that benefits from being cached.
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export default async function LoginPage({
   searchParams,
 }: PageProps<"/login">) {
   if (!isSupabaseConfigured()) {
-    // Names, never values — readable in Vercel's Runtime Logs. Turns "it says
+    // Names, never values, so it's safe in Vercel's Runtime Logs. Turns "it says
     // not configured" into "it found these three names and none of them match".
     logSupabaseConfigState("/login");
     return (
@@ -62,7 +62,7 @@ export default async function LoginPage({
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
 
-    // With email confirmation on, there's no session yet — the user has to click
+    // With email confirmation on, there's no session yet. The user has to click
     // the link first. With it off, they're already signed in.
     if (data.session) redirect("/dashboard");
     redirect(`/login?notice=${encodeURIComponent("Check your email to confirm the account.")}`);
@@ -76,7 +76,7 @@ export default async function LoginPage({
 
       <h1 className="mt-6 text-2xl font-semibold">Sign in</h1>
       <p className="mt-2 text-sm text-muted">
-        New here? Use the same form — Create account makes one.
+        New here? Use the same form and hit Create account.
       </p>
 
       {message && (

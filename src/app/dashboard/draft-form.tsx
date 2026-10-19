@@ -63,7 +63,7 @@ export default function DraftForm({ outOfDrafts }: { outOfDrafts: boolean }) {
           className="resize-y rounded-lg border border-border bg-background px-3 py-2.5 outline-none focus:border-accent"
         />
         <span className="text-xs text-muted">
-          A voicemail transcript, a note to yourself — whatever you actually have.
+          A voicemail transcript, a note to yourself, whatever you actually have.
         </span>
       </label>
 

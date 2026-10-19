@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/config";
 
 /**
- * Next 16 renamed Middleware to Proxy — same mechanism, new filename and export.
+ * Next 16 renamed Middleware to Proxy: same mechanism, new filename and export.
  *
  * This runs on every matched request to refresh the Supabase session cookie.
  * Without it, an expired access token never gets rotated and the user is

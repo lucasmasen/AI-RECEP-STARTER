@@ -10,7 +10,7 @@ import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/config";
  * activity, which would quietly break sign-in for anyone opening the demo link
  * a week after it was shared. Run daily by Vercel Cron (see vercel.json).
  *
- * The query has to actually reach Postgres to count — /api/health doesn't,
+ * The query has to actually reach Postgres to count. /api/health doesn't,
  * since it only reads environment variables. This runs under the anon key and
  * row level security, so it reads nothing: with no session, the policy matches
  * no rows. Executing the query is the entire point; the result is discarded.
@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set. When it isn't set,
-  // the endpoint stays open — it exposes no data, but setting the secret stops
+  // the endpoint stays open. It exposes no data, but setting the secret stops
   // anyone else from running it.
   const secret = process.env.CRON_SECRET;
   if (secret && request.headers.get("authorization") !== `Bearer ${secret}`) {

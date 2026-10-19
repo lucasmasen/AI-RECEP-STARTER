@@ -17,7 +17,7 @@ function startOfMonthISO(): string {
 /**
  * How many drafts this user has left this calendar month.
  *
- * Counted from the missed_calls rows themselves rather than a counter column —
+ * Counted from the missed_calls rows themselves rather than a counter column:
  * a counter can drift out of sync with reality, and at this volume the count
  * query is free. Both reads run under RLS, so they can only see their own rows.
  */

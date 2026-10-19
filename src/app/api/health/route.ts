@@ -8,7 +8,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
  * Diagnosing "the site says it isn't configured" through a CDN is guesswork:
  * a cached page from an older build is indistinguishable from a new build that
  * genuinely can't see its credentials. This route is never cached and reports
- * which commit is serving and whether that build can resolve its config — so
+ * which commit is serving and whether that build can resolve its config, so
  * the two cases can be told apart from outside.
  *
  * Booleans and a commit SHA only. No values, no variable names.

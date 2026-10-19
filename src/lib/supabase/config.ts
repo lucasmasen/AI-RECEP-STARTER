@@ -6,7 +6,7 @@
  * 1. Next.js inlines a static `process.env.NEXT_PUBLIC_FOO` into the compiled
  *    output at build time. Vercel's "Sensitive" environment variables are
  *    deliberately unavailable during the build, so a sensitive NEXT_PUBLIC_ var
- *    compiles to undefined and stays undefined forever — even though the value
+ *    compiles to undefined and stays undefined forever, even though the value
  *    is sitting right there at runtime.
  * 2. Hosting integrations don't agree on names. The Supabase integration has
  *    shipped SUPABASE_URL, NEXT_PUBLIC_SUPABASE_URL, and prefixed variants
@@ -15,8 +15,8 @@
  *
  * Indexing process.env with a variable (rather than a literal property access)
  * is what keeps the bundler from inlining it, so these are real runtime reads.
- * Every consumer of this module is server-side — there is no browser Supabase
- * client in this app — so runtime resolution is safe here.
+ * Every consumer of this module is server-side (there is no browser Supabase
+ * client in this app), so runtime resolution is safe here.
  */
 
 function readEnv(names: readonly string[]): string | undefined {

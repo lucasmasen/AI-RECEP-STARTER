@@ -24,8 +24,8 @@ export default async function Home() {
 
       <p className="mt-6 text-lg leading-relaxed text-muted">
         Log the number and what the caller wanted. Get three callback texts you can
-        actually send — written in your voice, with no invented prices, no made-up arrival
-        times, and one clear next step for the customer.
+        actually send. They're written in your voice, with no invented prices, no made-up
+        arrival times, and one clear next step for the customer.
       </p>
 
       <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -45,11 +45,11 @@ export default async function Home() {
           What it writes
         </p>
         <p className="mt-3 text-sm text-muted">
-          Missed call from (415) 555-0142 — water heater leaking into the garage, wants
+          Missed call from (415) 555-0142: water heater leaking into the garage, wants
           someone today
         </p>
         <p className="mt-4 rounded-lg bg-background p-4 font-mono text-sm leading-relaxed">
-          This is Mike at Bayview Plumbing — sorry I missed you. A leaking heater can get
+          This is Mike at Bayview Plumbing, sorry I missed you. A leaking heater can get
           worse fast, so shut the water valve on top of the tank if you can reach it. I can
           call you right back to lock in a time. Are you free in the next 20 minutes?
         </p>
