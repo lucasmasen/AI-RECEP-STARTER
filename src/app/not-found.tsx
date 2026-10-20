@@ -15,7 +15,7 @@ export default function NotFound() {
             Back home
           </Link>
           <Link href="/demo" className="btn-ghost">
-            Hear Clara instead
+            Hear Godfrey instead
           </Link>
         </div>
       </main>

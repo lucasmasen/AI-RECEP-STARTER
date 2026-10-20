@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Shutoff Call",
   },
   description:
-    "Clara answers the calls a plumber misses, walks the caller through shutting off their water, and sends the shop their details while they're still on the line.",
+    "Godfrey answers the calls a plumber misses, walks the caller through shutting off their water, and sends the shop their details while they're still on the line.",
 };
 
 export const viewport: Viewport = {

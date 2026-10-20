@@ -5,7 +5,7 @@
 const LINES: { who: "clara" | "caller"; text: string }[] = [
   {
     who: "clara",
-    text: "Thanks for calling Demo Plumbing, this is Clara, the shop's AI assistant, and this call may be recorded. What's going on?",
+    text: "Thanks for calling Demo Plumbing, this is Godfrey, the shop's AI assistant. To make sure you get the best service, this call may be recorded. Who do I have the pleasure of speaking with?",
   },
   { who: "caller", text: "There's water pouring out under my kitchen sink!" },
   {
@@ -33,7 +33,7 @@ export default function CallCard() {
             <p className="text-xs text-muted">9:14 PM · you were on a job</p>
           </div>
           <span className="ml-auto rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent">
-            Clara answered
+            Godfrey answered
           </span>
         </div>
 

@@ -124,7 +124,7 @@ export default function DemoForm() {
           <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M3 8.5l3.2 3L13 4.5" />
           </svg>
-          You&apos;re in. Call Clara:
+          You&apos;re in. Call Godfrey:
         </p>
         <p className="mt-3 font-display text-[2.6rem] leading-none font-extrabold tracking-tight tabular-nums [font-stretch:90%] sm:text-5xl">
           {number.display}
@@ -153,7 +153,7 @@ export default function DemoForm() {
             ))}
           </ul>
           <p className="mt-5 text-xs leading-relaxed text-muted">
-            Clara is an AI, and the call may be recorded. She answers as Demo Plumbing, a made-up
+            Godfrey is an AI, and the call may be recorded. He answers as Demo Plumbing, a made-up
             shop, so nothing you say reaches a real plumber.
           </p>
         </div>

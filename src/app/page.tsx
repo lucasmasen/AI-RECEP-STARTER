@@ -10,8 +10,8 @@ const STEPS = [
     body: "Your carrier forwards only the calls you don't answer, after about four rings. You keep your number, and turning it off is one code from your phone.",
   },
   {
-    title: "Clara answers for your shop",
-    body: "She says up front that she's your AI assistant. On an emergency she walks the caller through the shut-off. If they smell gas, she tells them to get out and call 911 or PG&E.",
+    title: "Godfrey answers for your shop",
+    body: "He says up front that he's your AI assistant. On an emergency he walks the caller through the shut-off. If they smell gas, he tells them to get out and call 911 or PG&E.",
   },
   {
     title: "You get the details while they're still on the line",
@@ -22,7 +22,7 @@ const STEPS = [
 const WONT = [
   {
     title: "Pretend to be a person",
-    body: "Every call opens with “this is Clara, the shop's AI assistant, and this call may be recorded.”",
+    body: "Every call opens with “this is Godfrey, the shop's AI assistant,” and says the call may be recorded before anything else.",
   },
   {
     title: "Quote your prices",
@@ -34,7 +34,7 @@ const WONT = [
   },
   {
     title: "Say help is coming when it isn't",
-    body: "If the alert to you doesn't go through, Clara says so and promises nothing.",
+    body: "If the alert to you doesn't go through, Godfrey says so and promises nothing.",
   },
 ];
 
@@ -67,12 +67,12 @@ export default async function Home() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
               Someone with water on the floor doesn&apos;t leave a voicemail. They call the next
-              plumber. Clara answers the calls you miss, helps the caller shut their water off,
+              plumber. Godfrey answers the calls you miss, helps the caller shut their water off,
               and sends you their details before they hang up.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/demo" className="btn-primary px-6 py-3.5 text-base">
-                Hear Clara answer a call
+                Hear Godfrey answer a call
                 <span aria-hidden="true">&rarr;</span>
               </Link>
               <Link href="#how" className="btn-ghost px-6 py-3.5 text-base">
@@ -80,7 +80,7 @@ export default async function Home() {
               </Link>
             </div>
             <p className="mt-5 text-sm text-muted">
-              Two minutes, from your own phone. She answers as a made-up shop.
+              Two minutes, from your own phone. He answers as a made-up shop.
             </p>
           </div>
           <CallCard />

@@ -4,15 +4,15 @@ import { SiteFooter, SiteHeader } from "@/components/brand";
 import DemoForm from "./demo-form";
 
 export const metadata: Metadata = {
-  title: "Hear Clara answer a call",
+  title: "Hear Godfrey answer a call",
   description: "Call the demo line and hear an AI receptionist handle a burst pipe for a plumbing shop.",
 };
 
 const WHAT_HAPPENS = [
-  "She tells you up front she's an AI and the call may be recorded.",
-  "Say there's an emergency and she walks you through shutting the water off.",
-  "She takes your name and number, and the shop gets an alert while you're still talking.",
-  "Ask something she doesn't know and she says the plumber will confirm. She doesn't guess.",
+  "He tells you up front he's an AI and the call may be recorded.",
+  "Say there's an emergency and he walks you through shutting the water off.",
+  "He takes your name and number, and the shop gets an alert while you're still talking.",
+  "Ask something he doesn't know and he says the plumber will confirm. He doesn't guess.",
 ];
 
 export default function DemoPage() {
@@ -24,11 +24,11 @@ export default function DemoPage() {
           <div className="md:col-start-1">
             <p className="eyebrow">Live demo</p>
             <h1 className="mt-4 text-[2.4rem] leading-[1.05] font-extrabold sm:text-5xl">
-              Hear Clara answer a call.
+              Hear Godfrey answer a call.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Call from your own phone and pretend something&apos;s wrong. She answers as Demo
-              Plumbing, a made-up shop, exactly the way she&apos;d answer for a real one. It
+              Call from your own phone and pretend something&apos;s wrong. He answers as Demo
+              Plumbing, a made-up shop, exactly the way he&apos;d answer for a real one. It
               takes about two minutes.
             </p>
           </div>

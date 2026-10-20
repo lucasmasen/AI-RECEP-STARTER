@@ -119,7 +119,7 @@ export default async function LoginPage({
           <p className="mt-6 text-center text-sm text-muted">
             Looking for the AI receptionist?{" "}
             <Link href="/demo" className="font-semibold text-accent underline-offset-4 hover:underline">
-              Hear Clara answer a call
+              Hear Godfrey answer a call
             </Link>
           </p>
         </div>

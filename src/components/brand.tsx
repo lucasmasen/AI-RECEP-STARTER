@@ -42,7 +42,7 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
             {signedIn ? "Dashboard" : "Sign in"}
           </Link>
           <Link href="/demo" className="btn-primary px-4 py-2 text-sm">
-            Hear Clara
+            Hear Godfrey
           </Link>
         </nav>
       </div>

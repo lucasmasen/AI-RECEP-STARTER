@@ -1,4 +1,4 @@
--- The "Hear Clara" page: a visitor leaves a name and email, then gets the demo line's number.
+-- The "Hear Godfrey" page: a visitor leaves a name and email, then gets the demo line's number.
 --
 -- The number isn't in the site's code. It lives in demo_line_settings and only comes back from
 -- request_demo_access(), which checks the fields, rate-limits, and records the request. Each new
