@@ -5,7 +5,7 @@
 const LINES: { who: "clara" | "caller"; text: string }[] = [
   {
     who: "clara",
-    text: "Thanks for calling Sunset Plumbing, this is Godfrey, the shop's AI assistant. To make sure you get the best service, this call may be recorded. Who do I have the pleasure of speaking with?",
+    text: "Good evening, Sunset Plumbing, this is Godfrey, the AI assistant here. Just so you know, this call is recorded. What can I help you with?",
   },
   { who: "caller", text: "There's water pouring out under my kitchen sink!" },
   {

@@ -22,7 +22,7 @@ const STEPS = [
 const WONT = [
   {
     title: "Pretend to be a person",
-    body: "Every call opens with “this is Godfrey, the shop's AI assistant,” and says the call may be recorded before anything else.",
+    body: "Every call opens with “this is Godfrey, the AI assistant here,” and says the call is recorded before anything else.",
   },
   {
     title: "Quote your prices",
