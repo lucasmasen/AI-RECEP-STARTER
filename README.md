@@ -5,7 +5,7 @@ two jobs:
 
 - **Show the receptionist.** The landing page tells the story, and `/demo` hands a visitor the
   number of the live demo line once they say who they are. Godfrey answers as a made-up shop,
-  "Demo Plumbing", so anyone can hear him handle a burst pipe from their own phone.
+  "Sunset Plumbing", so anyone can hear him book a job or handle a burst pipe from their own phone.
 - **The callback drafter**, a free tool for the calls that already got missed: log the number
   and what the caller wanted, and Claude writes three send-ready callback texts with an urgency
   read and no invented prices, arrival times, or availability.

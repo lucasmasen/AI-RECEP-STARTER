@@ -5,13 +5,13 @@ import DemoForm from "./demo-form";
 
 export const metadata: Metadata = {
   title: "Hear Godfrey answer a call",
-  description: "Call the demo line and hear an AI receptionist handle a burst pipe for a plumbing shop.",
+  description: "Call the demo line and hear an AI receptionist book a job or handle a burst pipe for a plumbing shop.",
 };
 
 const WHAT_HAPPENS = [
   "He tells you up front he's an AI and the call may be recorded.",
-  "Say there's an emergency and he walks you through shutting the water off.",
-  "He takes your name and number, and the shop gets an alert while you're still talking.",
+  "Ask for a visit and he offers real open times from the shop's calendar, then books the one you pick.",
+  "Say there's an emergency and the shop gets an alert at once, while he walks you through shutting the water off.",
   "Ask something he doesn't know and he says the plumber will confirm. He doesn't guess.",
 ];
 
@@ -27,7 +27,7 @@ export default function DemoPage() {
               Hear Godfrey answer a call.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Call from your own phone and pretend something&apos;s wrong. He answers as Demo
+              Call from your own phone and pretend something&apos;s wrong. He answers as Sunset
               Plumbing, a made-up shop, exactly the way he&apos;d answer for a real one. It
               takes about two minutes.
             </p>

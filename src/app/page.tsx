@@ -30,7 +30,7 @@ const WONT = [
   },
   {
     title: "Promise an arrival time",
-    body: "It takes the caller's preferred time and says the office will confirm it.",
+    body: "It books only times the shop's calendar really has open, and never says when the plumber will pull up.",
   },
   {
     title: "Say help is coming when it isn't",
@@ -42,7 +42,8 @@ const BUILD_NOTES = [
   "The alert to the owner counts as sent only when a channel confirms it. Otherwise the caller hears the truth.",
   "Scripted callers (burst pipe, gas, price haggling, “am I talking to a person?”) run against the real prompt before a change ships.",
   "Each shop gets its own assistant, number and alert channel, with a fallback so an alert never goes nowhere.",
-  "212 Python and 20 TypeScript tests, plus a scheduled health check on every live line.",
+  "Appointments go straight into the shop's calendar. Godfrey can only offer times the calendar returns, and a time he made up would be refused.",
+  "38 simulated callers (mumblers, interrupters, burst pipes at midnight) graded on every change, plus 250 Python and 49 TypeScript tests and a health check every 30 minutes.",
 ];
 
 export default async function Home() {

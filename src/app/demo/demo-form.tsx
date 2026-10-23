@@ -10,7 +10,7 @@ const STORAGE_KEY = "shutoff-call:demo-number";
 
 const TRY_SAYING = [
   { label: "An emergency", line: "“My pipe just burst under the kitchen sink!”" },
-  { label: "Something routine", line: "“My bathroom sink is draining really slowly.”" },
+  { label: "A booking", line: "“My kitchen sink is clogged. Can someone come Thursday morning?”" },
   { label: "A curveball", line: "“How much do you charge?” or “Am I talking to a real person?”" },
 ];
 
@@ -153,7 +153,7 @@ export default function DemoForm() {
             ))}
           </ul>
           <p className="mt-5 text-xs leading-relaxed text-muted">
-            Godfrey is an AI, and the call may be recorded. He answers as Demo Plumbing, a made-up
+            Godfrey is an AI, and the call may be recorded. He answers as Sunset Plumbing, a made-up
             shop, so nothing you say reaches a real plumber.
           </p>
         </div>
