@@ -1,1 +1,1 @@
-Missed Call Copilot: log a missed call, get three callback texts you can send.
+Shutoff Call: an AI receptionist answers a plumber's missed call, helps the caller shut off their water, and alerts the shop mid-call.

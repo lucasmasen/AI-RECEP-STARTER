@@ -1,12 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+const EXAMPLE = {
+  caller_number: "(415) 555-0142",
+  context: "Voicemail: water heater is leaking into the garage, she wants someone out today and asked what it costs.",
+};
 
 export default function DraftForm({ outOfDrafts }: { outOfDrafts: boolean }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  function fillExample() {
+    const form = formRef.current;
+    if (!form) return;
+    (form.elements.namedItem("caller_number") as HTMLInputElement).value = EXAMPLE.caller_number;
+    (form.elements.namedItem("context") as HTMLTextAreaElement).value = EXAMPLE.context;
+  }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,27 +53,33 @@ export default function DraftForm({ outOfDrafts }: { outOfDrafts: boolean }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-6 rounded-xl border border-border bg-card p-5">
-      <h2 className="font-medium">Log a missed call</h2>
+    <form ref={formRef} onSubmit={onSubmit} className="card mt-6 p-6">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-xl font-bold">Log a missed call</h2>
+        <button type="button" onClick={fillExample} className="text-sm font-semibold text-accent underline-offset-4 hover:underline">
+          Use an example
+        </button>
+      </div>
 
-      <label className="mt-4 flex flex-col gap-1.5 text-sm">
-        Caller number
+      <label className="mt-5 flex flex-col gap-1.5">
+        <span className="text-sm font-semibold">Caller number</span>
         <input
           name="caller_number"
           required
+          inputMode="tel"
           placeholder="(415) 555-0142"
-          className="rounded-lg border border-border bg-background px-3 py-2.5 outline-none focus:border-accent"
+          className="field"
         />
       </label>
 
-      <label className="mt-4 flex flex-col gap-1.5 text-sm">
-        What they wanted
+      <label className="mt-5 flex flex-col gap-1.5">
+        <span className="text-sm font-semibold">What they wanted</span>
         <textarea
           name="context"
           required
           rows={3}
           placeholder="Voicemail said water heater is leaking into the garage, wants someone today"
-          className="resize-y rounded-lg border border-border bg-background px-3 py-2.5 outline-none focus:border-accent"
+          className="field resize-y"
         />
         <span className="text-xs text-muted">
           A voicemail transcript, a note to yourself, whatever you actually have.
@@ -69,16 +88,20 @@ export default function DraftForm({ outOfDrafts }: { outOfDrafts: boolean }) {
 
       <button
         disabled={pending || outOfDrafts}
-        className="mt-5 w-full rounded-lg bg-accent px-4 py-2.5 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+        className="btn-primary mt-6 w-full"
       >
         {outOfDrafts
           ? "Out of free drafts this month"
           : pending
-            ? "Writing…"
+            ? "Writing three drafts…"
             : "Write callback texts"}
       </button>
 
-      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-4 rounded-lg border border-missed/30 bg-missed/10 px-4 py-3 text-sm text-missed">
+          {error}
+        </p>
+      )}
     </form>
   );
 }

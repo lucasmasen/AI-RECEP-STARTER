@@ -1,0 +1,32 @@
+# Runs on every push: if lint, types or the build break, GitHub shows a red X
+# on the commit before anyone deploys it. No secrets needed: the build reads
+# Supabase/Anthropic config at runtime, not at build time.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      # next build also type-checks (and generates the route types a bare
+      # `tsc --noEmit` would miss), so there is no separate tsc step.
+      - run: npm run build

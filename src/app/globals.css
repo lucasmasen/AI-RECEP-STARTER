@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
+/* Shutoff Call brand: water blue, brass, ink on paper. The same palette as the plumber one-pager.
+   The older names (background, foreground, card, border, accent) are kept so every page follows it. */
 :root {
-  --background: #ffffff;
-  --foreground: #14161a;
-  --muted: #5b6472;
-  --border: #e3e6ea;
+  --background: #f5f8f9;
+  --foreground: #0e2433;
+  --muted: #4d6170;
+  --border: #cfd9df;
   --card: #ffffff;
-  --accent: #1c5de3;
+  --accent: #1f6fa3;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2eef6;
+  --brass: #b7791f;
+  --brass-ink: #ffffff;
+  --missed: #b4332b;
+  --ok: #2f7d4f;
+  --shadow: 0 1px 2px rgb(14 36 51 / 0.06), 0 8px 24px -12px rgb(14 36 51 / 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1821;
+    --foreground: #e9f0f4;
+    --muted: #9db0bd;
+    --border: #24394a;
+    --card: #12232f;
+    --accent: #6fb3e0;
+    --accent-ink: #06121b;
+    --accent-soft: #15324a;
+    --brass: #e0a548;
+    --brass-ink: #1a1206;
+    --missed: #f0857c;
+    --ok: #74c69d;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.6);
+  }
 }
 
 @theme inline {
@@ -16,23 +43,116 @@
   --color-border: var(--border);
   --color-card: var(--card);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-brass: var(--brass);
+  --color-brass-ink: var(--brass-ink);
+  --color-missed: var(--missed);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --shadow-card: var(--shadow);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0d0f12;
-    --foreground: #eceef1;
-    --muted: #949ca9;
-    --border: #23272e;
-    --card: #14171c;
-    --accent: #6f9cff;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), "Arial Narrow", sans-serif;
+  font-stretch: 92%;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .btn-primary,
+  .btn-brass,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-semibold transition
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-accent text-accent-ink hover:brightness-110 active:brightness-95;
+  }
+  .btn-brass {
+    @apply bg-brass text-brass-ink hover:brightness-110 active:brightness-95;
+  }
+  .btn-ghost {
+    @apply border border-border bg-card hover:border-accent;
+  }
+  .field {
+    @apply w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-base outline-none transition
+      placeholder:text-muted/70 focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+  .card {
+    @apply rounded-2xl border border-border bg-card shadow-card;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold tracking-[0.14em] text-brass uppercase;
+  }
+}
+
+/* The hero call plays in, one line at a time. Off for anyone who prefers less motion. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  animation: rise-in 0.5s ease-out both;
+}
+@keyframes ring {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  10%,
+  30% {
+    transform: rotate(-12deg);
+  }
+  20%,
+  40% {
+    transform: rotate(12deg);
+  }
+  50% {
+    transform: rotate(0);
+  }
+}
+.ring {
+  animation: ring 2.4s ease-in-out infinite;
+  transform-origin: 50% 20%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise-in,
+  .ring {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }
